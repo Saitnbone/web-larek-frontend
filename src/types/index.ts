@@ -1,7 +1,7 @@
 // Общие типы
 
 // Категории товаров приложения
-type TCategory =
+export type TCategory =
 	| 'софт-скилл'
 	| 'другое'
 	| 'дополнительное'
@@ -9,27 +9,27 @@ type TCategory =
 	| 'хард-скилл';
 
 // Методы оплаты
-type TPaymentMethod = 'онлайн' | 'при получении';
+export type TPaymentMethod = 'онлайн' | 'при получении';
 
 // Модели для проекта (model)
-
-// Модель товара
-interface IItemModel {
+export interface ICardModel {
 	id: string;
 	description: string;
 	image: string;
 	title: string;
-	category: TCategory;
+	category: string;
 	price: number;
 }
 
 // Модель списка товаров
-interface IListItemsModel {
-	items: IItemModel[];
+export interface IListCardsModel {
+	items: ICardModel[];
+	preview: string | null;
+	getItem(product: string): ICardModel | undefined;
 }
 
 // Заказ
-interface IOrderModel {
+export interface IOrderModel {
 	payment: TPaymentMethod;
 	email: string;
 	address: string;
@@ -38,72 +38,85 @@ interface IOrderModel {
 }
 
 // Модель корзины
-interface IBasket {
-	items: IListItemsModel[];
+export interface IBasket {
+	items: IListCardsModel[];
 	totalPrice: number;
-	addItem(product: IItemModel): void;
-	deleteItems(product: IItemModel): void;
+	addItem(product: ICardModel): void;
+	deleteItems(product: ICardModel): void;
 }
 
 // Виды для проекта (View)
 
 // Страница сайта
-interface Page {
+export interface Page {
 	itemsList: HTMLElement;
 	basketCounter: number;
 }
 
-// Продукт
-interface IItemView {
+// Интерфейс для карточки товара
+export interface ICardView {
 	category?: HTMLElement;
 	title: HTMLElement;
 	image?: HTMLImageElement;
 	description?: HTMLElement;
 	price: HTMLElement;
 	button?: HTMLButtonElement;
+	renderElement(data: ICardModel[]): void;
+}
+
+// Интерфейс для открытой карточки товара 
+export interface IFullCardView {
+	category: HTMLElement;
+	title: HTMLElement;
+	image: HTMLImageElement;
+	price: HTMLElement;
+	description: HTMLElement;
+	button: HTMLButtonElement;
+	openCard(data: ICardModel): void;
+	close(): void;
 }
 
 // Корзина
-interface IBasketView {
+export interface IBasketView {
 	itemsList: HTMLElement[];
 	totalPrice: number;
 }
 
 // Модальное окно
-interface IModalView {
+export interface IModalView {
 	content: HTMLElement;
 	open(): void;
 	close(): void;
 }
 
 // Модальное окно с оплатой и адресом
-interface IPaymentInformationView {
+export interface IPaymentInformationView {
 	payment: string;
 	address: string;
 }
 
 // Модальное окно с личной информацией
-interface IPersonalInformationView {
+export interface IPersonalInformationView {
 	email: string;
 	phone: string;
 }
 
 // Модальное окно с успешным заказом
-interface ISuccessfulOrderView {
+export interface ISuccessfulOrderView {
 	totalPrice: number;
 }
 
 // // Презентеры для проекта (Presents)
 
 // Презентер  событий
-interface IEvents {
+export interface IEvents {
 	on<T>(event: string, callback: (data: T) => void): void;
 	emit<T>(event: string, data?: T): void;
 	trigger<T>(event: string, context?: Partial<T>): (data: T) => void;
 }
 
 // Интерфейс для работы с API
-interface IApi {
-	getProducts(): Promise<IItemModel[]>;
-	getProduct(id: string): Promise<IItemModel>;
+export interface IApi {
+	getProducts(): Promise<ICardModel[]>;
+	getProduct(id: string): Promise<ICardModel>;
 }
