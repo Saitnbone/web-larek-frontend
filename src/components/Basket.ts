@@ -23,8 +23,9 @@ export class Basket implements IBasket {
 	getItems(): ICardModel[] {
 		return this.items;
 	}
-
-	// removeItems(id: string){
-	// 	this.items.splice(id:String, 1)
-	// }
+	
+	// Метод для удаления товара из корзины пользователя
+	deleteItem(itemdId: string): void{ 
+		this.items = this.items.filter(item => item.id !== itemdId)
+	}
 }

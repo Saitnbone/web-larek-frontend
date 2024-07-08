@@ -1,10 +1,9 @@
-// Импорты
 import { ICardModel } from '../types';
 import { CDN_URL } from '../utils/constants';
 import { Basket } from './Basket';
 import { BasketView } from './BasketView';
 
-// Интерфейс для отображения карточки с  дополнительной информацией
+// Интейрфес для карточки с подробной информацией
 export interface IFullCardView {
 	category: HTMLElement;
 	title: HTMLElement;
@@ -16,7 +15,7 @@ export interface IFullCardView {
 	close(): void;
 }
 
-// Класс для отображения модального окна с дополнительной информацией о товаре
+// Класс для карточки с подробной информацией о товаре
 export class CardModal implements IFullCardView {
 	category: HTMLElement;
 	title: HTMLElement;
@@ -34,12 +33,10 @@ export class CardModal implements IFullCardView {
 	private currentItem: ICardModel | null;
 
 	constructor(
-		//
 		page: HTMLBodyElement,
-		//
 		modalContainer: HTMLElement,
 		contentArea: HTMLElement,
-		basket: Basket, 
+		basket: Basket,
 		basketView: BasketView
 	) {
 		this.modalContainer = modalContainer;
@@ -72,7 +69,15 @@ export class CardModal implements IFullCardView {
 			.addEventListener('click', this.addToBasket.bind(this));
 	}
 
+	// Метод для открытия карточки с доп. информацией
 	openCard(data: ICardModel): void {
+		this.clearContent();
+		// Устанавливаем текущий элемент
+		this.currentItem = data; 
+
+		// Логирование для отладки
+		console.log('Текущий элемент установлен:', this.currentItem);
+
 		this.category.textContent = data.category;
 		this.title.textContent = data.title;
 		this.image.src = CDN_URL + data.image;
@@ -82,18 +87,36 @@ export class CardModal implements IFullCardView {
 		this.description.textContent = data.description;
 		this.modalContainer.classList.add('modal_active');
 		this.page.classList.add('no-scroll');
-		this.contentArea.append(this.modalElement);
+		this.contentArea.appendChild(this.modalElement);
 	}
 
+	// Закрытие карточки
 	close(): void {
 		this.modalContainer.classList.remove('modal_active');
 		this.page.classList.remove('no-scroll');
+		this.clearContent();
+		this.currentItem = null; // Сбрасываем текущий элемент при закрытии
 	}
 
+	// Добавление карточки в корзину пользователя
 	addToBasket(): void {
 		if (this.currentItem) {
+			// Логирование для отладки
+			console.log('Добавлено в корзину:', this.currentItem);
+
 			this.basket.addItem(this.currentItem);
-			this.basketView.render(this.basket.getItems())
+			this.basketView.countQuantity(this.basket.getItems());
+		} else {
+			// Логирование ошибки
+			console.error('Нет корректных данныз для добавления в корзину');
+		}
+	}
+
+	// Метод для очистки модального окна при закрытии
+	clearContent() {
+		const content = this.modalContainer.querySelector('.modal__content');
+		if (content) {
+			content.innerHTML = '';
 		}
 	}
 }

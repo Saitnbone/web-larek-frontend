@@ -35,7 +35,7 @@
 			<main class="gallery"></main>
 		</div>
 
-		<!-- Конструкция для модальных окон -->
+		<!-- Блок для вставки модальных окон -->
 		<div class="modal" id="modal-container">
 			<div class="modal__container">
 				<button class="modal__close" aria-label="закрыть"></button>
@@ -68,11 +68,11 @@
 		</div> -->
 
 		<!-- Модальное окно с корзиной и списком покупок -->
-		<div class="modal">
+		<!-- <div class="modal">
 			<div class="modal__container">
 				<button class="modal__close" aria-label="закрыть"></button>
 				<div class="modal__content">
-					<div class="basket">
+					<div class="basket" id="basket-container">
 						<h2 class="modal__title">Корзина</h2>
 						<ul class="basket__list">
 							<li class="basket__item card card_compact">
@@ -92,7 +92,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div> -->
 
 		<!-- Модальное окно со способом оплаты заказа -->
 		<!-- <div class="modal">
@@ -195,7 +195,6 @@
 		</template>
 
 		<!-- Темплейт карточки товара с полным описанием -->
-		<!-- //// -->
 		<template id="card-preview">
 			<div class="card card_full">
 				<img class="card__image" src="" alt="" />
@@ -211,11 +210,12 @@
 			</div>
 		</template>
 
+		<!-- Темплейт для позиции заказа в корзине пользователя -->
 		<template id="card-basket">
 			<li class="basket__item card card_compact">
-				<span class="basket__item-index">1</span>
-				<span class="card__title">Фреймворк куки судьбы</span>
-				<span class="card__price">2500 синапсов</span>
+				<span class="basket__item-index"></span>
+				<span class="card__title"></span>
+				<span class="card__price"></span>
 				<button
 					class="basket__item-delete card__button"
 					aria-label="удалить"
@@ -223,6 +223,7 @@
 			</li>
 		</template>
 
+		<!-- Темплейт модального окна корзины для вставки элемента карточки -->
 		<template id="basket">
 			<div class="basket">
 				<h2 class="modal__title">Корзина</h2>
