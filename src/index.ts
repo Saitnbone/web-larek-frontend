@@ -9,6 +9,9 @@ import { CardModal } from './components/CardModal';
 import { Basket } from './components/Basket';
 import { BasketView } from './components/BasketView';
 import { BasketButton } from './components/BasketButton';
+import { Order } from './components/Order';
+import { PersonalInformation } from './components/PersonaInformation';
+import { ConfirmOrder } from './components/ConfirmOrder';
 
 // DOM-узел для главной страницы приложения
 const page = document.querySelector('.page') as HTMLBodyElement;
@@ -29,10 +32,26 @@ const basketItemContainer = document.querySelector(
 const headerButton = document.querySelector(
 	'.header__basket'
 ) as HTMLButtonElement;
-const basketCounter = headerButton.querySelector('.header__basket-counter') as HTMLElement;
-// Пересмотреть и исправить при необходимости 
+const basketCounter = headerButton.querySelector(
+	'.header__basket-counter'
+) as HTMLElement;
 const basketTemplate = document.querySelector('#basket') as HTMLTemplateElement;
-const cardBasketTemplate = document.querySelector('#card-basket') as HTMLTemplateElement;
+const cardBasketTemplate = document.querySelector(
+	'#card-basket'
+) as HTMLTemplateElement;
+
+// DOM-узлы для модального окна с выбором способа доставки
+const orderTemplate = document.querySelector('#order') as HTMLTemplateElement;
+
+// DOM-узлы для модального окна с персональной информацией
+const personalTemplate = document.querySelector(
+	'#contacts'
+) as HTMLTemplateElement;
+
+// DOM-узлы для модального окна с успешным заказом
+const successTemplate = document.querySelector(
+	'#success'
+) as HTMLTemplateElement;
 
 // Константы для проекта
 const apiOrigin = process.env.API_ORIGIN;
@@ -43,8 +62,24 @@ if (!apiOrigin) {
 // Экземпляры классов
 const api = new Api(apiOrigin);
 const basket = new Basket();
-const basketView = new BasketView(basket, modalContainer, basketContainer, basketTemplate, cardBasketTemplate, basketCounter);
-const basketButton = new BasketButton(page,
+const confirmOrder = new ConfirmOrder(basket, successTemplate, contentArea);
+const personalInformation = new PersonalInformation(
+	confirmOrder,
+	personalTemplate,
+	contentArea
+);
+const order = new Order(personalInformation, orderTemplate, contentArea);
+const basketView = new BasketView(
+	basket,
+	modalContainer,
+	basketContainer,
+	basketTemplate,
+	cardBasketTemplate,
+	basketCounter,
+	order
+);
+const basketButton = new BasketButton(
+	page,
 	modalContainer,
 	basket,
 	basketView,

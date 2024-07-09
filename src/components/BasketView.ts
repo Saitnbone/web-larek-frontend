@@ -1,6 +1,7 @@
 // Импорты
 import { ICardModel } from '../types';
 import { Basket } from './Basket';
+import { Order } from './Order';
 
 // Интерфейс для вида корзины
 interface IBasketView {
@@ -17,6 +18,7 @@ export class BasketView implements IBasketView {
 	cardBasketTemplate: HTMLTemplateElement;
 	basketCounter: HTMLElement;
 	basket: Basket;
+	order: Order;
 
 	constructor(
 		basket: Basket,
@@ -24,8 +26,10 @@ export class BasketView implements IBasketView {
 		container: HTMLElement,
 		basketTemplate: HTMLTemplateElement,
 		cardBasketTemplate: HTMLTemplateElement,
-		basketCounter: HTMLElement
+		basketCounter: HTMLElement,
+		order: Order
 	) {
+		this.order = order;
 		this.basket = basket;
 		this.container = container;
 		this.modal = modal;
@@ -54,7 +58,9 @@ export class BasketView implements IBasketView {
 			true
 		) as HTMLElement;
 		const basket = basketElement.querySelector('.basket');
-		const basketButton = basket.querySelector('.button') as HTMLButtonElement;
+		const basketButton = basket.querySelector(
+			'.basket__button'
+		) as HTMLButtonElement;
 
 		if (!cartItems || cartItems.length === 0) {
 			basketButton.disabled = true;
@@ -63,6 +69,11 @@ export class BasketView implements IBasketView {
 			basketButton.disabled = false;
 			contentBasketBlock.appendChild(basket);
 			this.renderBasketCards(cartItems);
+
+			// Вызов метода рендеринга модального окна с оформлением заказа
+			basketButton.addEventListener('click', () =>
+				this.order.renderOrderModal()
+			);
 		}
 	}
 

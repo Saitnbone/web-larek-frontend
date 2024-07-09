@@ -38,7 +38,7 @@ export class BasketButton implements IBasketButton {
 	openBasket() {
 		this.modalBasket.classList.add('modal_active');
 
-		// Метод рендеринга модального онка корзины
+		// Метод рендеринга модального окна корзины
 		this.basketView.renderModal(this.basket.getItems());
 		this.page.classList.add('no-scroll')
 	}
