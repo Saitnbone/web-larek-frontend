@@ -1,122 +1,47 @@
-// Общие типы
+// Типы запросов на сервер
+export type ApiPostMethods = 'POST' | 'PUT' | 'DELETE';
 
-// Категории товаров приложения
-export type TCategory =
-	| 'софт-скилл'
-	| 'другое'
-	| 'дополнительное'
-	| 'кнопка'
-	| 'хард-скилл';
+export type TOrder = Pick<IOrder, 'payment' | 'address' | 'email' | 'phone'>;
 
-// Методы оплаты
-export type TPaymentMethod = 'онлайн' | 'при получении';
-
-// Модели для проекта (model)
-export interface ICardModel {
-	id: string;
-	description: string;
-	image: string;
-	title: string;
-	category: string;
-	price: number;
-}
-
-// Модель списка товаров
-export interface IListCardsModel {
-	items: ICardModel[];
+// Интерфейс для страницы магазина
+export interface IPage {
+	catalog: IProductModel[];
+	basket: string[];
+	order: IOrder | null;
+	basketTotal: number;
 	preview: string | null;
-	getItem(product: string): ICardModel | undefined;
-}
-
-// Заказ
-export interface IOrderModel {
-	payment: TPaymentMethod;
-	email: string;
-	address: string;
-	items: string[];
-	total: number;
-}
-
-// Модель корзины
-export interface IBasket {
-	items: IListCardsModel[];
-	totalPrice: number;
-	addItem(product: ICardModel): void;
-	deleteItems(product: ICardModel): void;
-}
-
-// Виды для проекта (View)
-
-// Страница сайта
-export interface Page {
-	itemsList: HTMLElement;
-	basketCounter: number;
 }
 
 // Интерфейс для карточки товара
-export interface ICardView {
-	category?: HTMLElement;
-	title: HTMLElement;
-	image?: HTMLImageElement;
-	description?: HTMLElement;
-	price: HTMLElement;
-	button?: HTMLButtonElement;
-	renderElement(data: ICardModel[]): void;
+export interface IProductModel {
+	id: string;
+	index: number;
+	category: string;
+	title: string;
+	image: string;
+	description: string;
+	price: number;
 }
 
-// Интерфейс для открытой карточки товара 
-export interface IFullCardView {
-	category: HTMLElement;
-	title: HTMLElement;
-	image: HTMLImageElement;
-	price: HTMLElement;
-	description: HTMLElement;
-	button: HTMLButtonElement;
-	openCard(data: ICardModel): void;
-	close(): void;
-}
-
-// Корзина
-export interface IBasketView {
-	itemsList: HTMLElement[];
-	totalPrice: number;
-}
-
-// Модальное окно
-export interface IModalView {
-	content: HTMLElement;
-	open(): void;
-	close(): void;
-}
-
-// Модальное окно с оплатой и адресом
-export interface IPaymentInformationView {
+// Интерфейс для модального окна с выбором способа оплаты
+export interface IOrder {
+	items: string[];
 	payment: string;
-	address: string;
-}
-
-// Модальное окно с личной информацией
-export interface IPersonalInformationView {
 	email: string;
 	phone: string;
+	address: string;
+	total: number;
 }
 
-// Модальное окно с успешным заказом
-export interface ISuccessfulOrderView {
-	totalPrice: number;
+export interface IOrderResult {
+	id: string;
 }
 
-// // Презентеры для проекта (Presents)
+// Тип для ошибок в формах
+export type FormErrors = Partial<Record<keyof IOrder, string>>;
 
-// Презентер  событий
-export interface IEvents {
-	on<T>(event: string, callback: (data: T) => void): void;
-	emit<T>(event: string, data?: T): void;
-	trigger<T>(event: string, context?: Partial<T>): (data: T) => void;
-}
-
-// Интерфейс для работы с API
+// Интерфейс для апи
 export interface IApi {
-	getProducts(): Promise<ICardModel[]>;
-	getProduct(id: string): Promise<ICardModel>;
+	getProducts: () => Promise<IProductModel[]>;
+	orderProducts(order: IOrder): Promise<IOrderResult>;
 }
