@@ -93,7 +93,7 @@ export class PageModel extends Model<IPage> {
 		}
 
 		this.formErrors = errors;
-		this.events.emit('formErrors:change', this.formErrors);
+		this.events.emit('form-errors:change', this.formErrors);
 		return Object.keys(errors).length === 0;
 	}
 

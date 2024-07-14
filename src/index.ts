@@ -42,17 +42,17 @@ const contactsView = new ContactsFormView(
 	events
 );
 
+// Включение всех событий в приложении
+events.onAll(() => {});
+
 // API-запрос на получение данных с сервера
 api
 	.getProducts()
 	.then((res) => {
 		pageModel.products = res;
-		events.emit('products:loaded', res);
+		events.emit('productsData:loaded', res);
 	})
 	.catch((err) => console.error(err));
-
-// Включение всех событий в приложении
-events.onAll(() => {});
 
 // Включение события открытия Модальных окон
 events.on('modal:open', () => {
@@ -65,7 +65,7 @@ events.on('modal:close', () => {
 });
 
 // Включение события рендеринга карточек товаров
-events.on('products:loaded', () => {
+events.on('productsData:loaded', () => {
 	page.catalog = pageModel.products.map((product) => {
 		const card = new CardView('card', cloneTemplate(cardCatalogTemplate), {
 			onClick: () => events.emit('card:select', product),
@@ -176,25 +176,32 @@ events.on('order-form:open', () => {
 	});
 });
 
-const updateOrderAndContacts = (data: {
-	field: keyof TOrder;
-	value: string;
-}) => {
+const updateFormsValue = (data: { field: keyof TOrder; value: string }) => {
 	pageModel.setOrderField(data.field, data.value);
 };
 
-events.on(/^order\..*:change/, updateOrderAndContacts);
-events.on(/^contacts\..*:change/, updateOrderAndContacts);
+events.on(/^order\..*:change/, updateFormsValue);
+events.on(/^contacts\..*:change/, updateFormsValue);
 
 events.on('payment:take', (data: { payment: string }) => {
 	pageModel.setOrderField('payment', data.payment);
 });
 
 events.on('form-errors:change', (errors: Partial<IOrder>) => {
+
+	// Ошибки для модального окна оплаты
 	const { payment, address } = errors;
 
 	orderView.valid = !payment && !address;
 	orderView.errors = Object.values({ address, payment })
+		.filter(Boolean)
+		.join('; ');
+
+	// Ошибки для модального окна доставки
+	const { phone, email } = errors;
+
+	contactsView.valid = !phone && !email;
+	contactsView.errors = Object.values({ phone, email })
 		.filter(Boolean)
 		.join('; ');
 });

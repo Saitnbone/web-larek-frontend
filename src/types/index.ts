@@ -1,6 +1,5 @@
-// Типы запросов на сервер
+// Базовые типы
 export type ApiPostMethods = 'POST' | 'PUT' | 'DELETE';
-
 export type TOrder = Pick<IOrder, 'payment' | 'address' | 'email' | 'phone'>;
 
 // Интерфейс для страницы магазина
